@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "exclude": ["out", "dist", "node_modules"],
+  "include": ["**/*.test.ts", "**/*.test.tsx"],
+  "types": ["node", "wolfpkgs"],
+  "reflection": true
+}

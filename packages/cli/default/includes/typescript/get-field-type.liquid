@@ -1,0 +1,121 @@
+{%- liquid
+  assign types = []
+  assign schema = field.type.raw.schema
+  assign meta = field.type.raw.meta
+  assign nullable = false
+
+  assign is_json = false
+  case schema.data_type
+    when 'uuid'
+      assign types = types | array_unshift: 'UUID'
+    when 'json'
+      assign is_json = true
+    when 'text'
+      assign types = types | array_unshift: 'string'
+    when 'integer'
+      assign types = types | array_unshift: 'number'
+    when 'bigint'
+      assign types = types | array_unshift: 'BigInt'
+    when 'boolean'
+      assign types = types | array_unshift: 'boolean'
+    when 'character varying'
+      assign types = types | array_unshift: 'string'
+    when 'timestamp':
+      assign types = types | array_unshift: 'Date'
+    when 'timestamp with time zone':
+      assign types = types | array_unshift: 'Date'
+    when 'timestamp without time zone':
+      assign types = types | array_unshift: 'Date'
+  endcase
+
+  assign json_type = false
+  assign is_cast_json = meta.special | array_contains: "cast-json"
+  if is_cast_json or is_json
+    if schema.json_schema != null
+      assign json_type = '"json_schema"'
+    else
+      assign json_type = 'any'
+    endif
+  endif
+
+  case meta.interface
+    when 'tags'
+      assign types = types | array_unshift: 'string[]'
+    when 'select-dropdown'
+      assign values = meta.options.choices | map: 'value' | quote
+      for value in values
+        if value == null
+          # assign types = types | array_unshift: 'null'
+          assign nullable = true
+        else
+          assign types = types | array_unshift: value
+        endif
+      endfor
+      assign json_type = false
+  endcase
+
+  if schema.is_nullable
+    # assign types = types | array_push: 'null'
+    assign nullable = true
+  endif
+  if json_type != false
+    assign types = types | array_unshift: json_type
+  endif
+
+  assign is_user = meta.special | array_contains: "user-created"
+  if is_user
+    assign types = types | array_push: "Directus.DirectusUser<Schema>"
+  endif
+
+  assign is_user = meta.special | array_contains: "user-updated"
+  if is_user
+    assign types = types | array_push: "Directus.DirectusUser<Schema>"
+  endif
+
+  assign is_file = meta.special | array_contains: "file"
+  if is_file
+    assign types = types | array_push: "Directus.DirectusFile<Schema>"
+  endif
+
+  assign is_files = meta.special | array_contains: "files"
+  if is_files
+    assign types = types | array_push: "Directus.DirectusFile<Schema>[]"
+  endif
+
+  if field.is_translations
+    assign types = types | array_push: field.translations_collection
+  endif
+
+  if field.type.is_relationship
+    if field.type.relationship.type == 'o2m'
+      assign types = types | array_push: "CARALHO1"
+    endif
+    if field.type.relationship.type == 'm2o'
+      assign types = types | array_push: "CARALHO2"
+    endif
+    if field.type.relationship.type == 'a2o'
+      assign types = types | array_push: "CARALHO3"
+    endif
+  endif
+
+  assign type_count = types | array_length
+  if type_count <= 0
+    assign schemaStr = schema | json
+    assign metaStr = meta | json
+    assign unknown = "UnknownType<{ schema: " | append: schemaStr | append: ", meta: " | append: metaStr | append: " }>"
+    assign types = types | array_unshift: unknown
+  endif
+
+  assign output = ""
+  assign is_no_data = meta.special | array_contains: "no-data"
+  if is_no_data
+    assign output = "never"
+  else
+    assign output = types | join: ' | '
+    if nullable
+      assign output = output | wrap: 'Optional<', '>'
+    endif
+  endif
+
+  echo output
+-%}

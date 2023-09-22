@@ -1,0 +1,11 @@
+{%- capture output %}
+/**
+  * The `{{ field.name }}` field.
+{%- if field.type.default_value != null %}
+  * @default {{ '{' -}}
+  {{- field.type.default_value | json -}}
+  {{- '}' }}
+{%- endif %}
+  */
+{%- endcapture %}
+{{- output | indent: prefix }}

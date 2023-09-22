@@ -1,0 +1,17 @@
+{
+  "files.associations": {
+    "*.njk": "nunjucks"
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${basename}.d.ts,${basename}.d.ts.map,${basename}.js,${basename}.js.map"
+  },
+  "files.exclude": {
+    //"**/node_modules": true,
+    "**/*.js": { "when": "$(basename).ts" },
+    "**/*.js.map": true,
+    "**/*.d.ts": { "when": "$(basename).ts" },
+    "**/*.d.ts.map": true
+  }
+}

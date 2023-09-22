@@ -1,0 +1,60 @@
+{
+  "name": "@indirectus/cli",
+  "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "description": "Directus Tools CLI.",
+  "keywords": [
+    "indirectus",
+    "directus",
+    "sdk",
+    "cli",
+    "typegen",
+    "generator",
+    "type-generator",
+    "typescript"
+  ],
+  "author": {
+    "name": "João Biondo",
+    "email": "wolfulus@gmail.com"
+  },
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "**/*.js",
+    "**/*.d.ts",
+    "**/*.njk"
+  ],
+  "bin": {
+    "indirectus": "./cli/index.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "pnpm build:src && pnpm build:tests",
+    "build:src": "tsc",
+    "build:tests": "echo none"
+  },
+  "dependencies": {
+    "@directus/sdk": "^12.0.0",
+    "@directus/shared": "^9.24.0",
+    "@wolfpkgs/core": "^0.2.13",
+    "chokidar": "^3.5.3",
+    "citty": "^0.1.4",
+    "consola": "^3.2.3",
+    "eventemitter2": "^6.4.9",
+    "jiti": "^1.20.0",
+    "nunjucks": "^3.2.4",
+    "prettier": "^3.0.3"
+  },
+  "optionalDependencies": {
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/nunjucks": "^3.2.3",
+    "@wolfpkgs/tsconfig": "^0.2.0",
+    "conditional-type-checks": "^1.0.6",
+    "ts-toolbelt": "^9.6.0",
+    "typescript": "^5.2.2"
+  }
+}
