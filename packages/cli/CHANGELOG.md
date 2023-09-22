@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.1.0
+
+### Minor Changes
+
+- minor bump
+
 ## 0.0.2
 
 ### Patch Changes
