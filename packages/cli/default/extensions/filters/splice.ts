@@ -1,4 +1,7 @@
+import type { TemplateContext } from "../../../types/template";
+
 export function splice(
+  context: TemplateContext,
   arr: Array<any>,
   start: number,
   count: number | undefined = undefined,

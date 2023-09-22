@@ -2,6 +2,12 @@
   "name": "@indirectus/workspace",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "ci:build": "pnpm -r build",
+    "ci:version": "pnpm changeset version",
+    "ci:publish": "pnpm -r publish --access public",
+    "ci": "pnpm ci:build && pnpm ci:version && pnpm ci:publish"
+  },
   "devDependencies": {
     "@types/node": "^20.6.3",
     "typescript": "^5.2.2",
@@ -9,5 +15,6 @@
   },
   "dependencies": {
     "@changesets/cli": "^2.26.2"
-  }
+  },
+  "files": []
 }

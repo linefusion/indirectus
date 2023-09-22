@@ -286,7 +286,10 @@ export class Generator extends TypedEventEmitter<GeneratorEvents> {
         .replace(/, line:/g, ":")
         .replace(/, col:/g, ":");
       if (err?.context) {
-        context = err?.context?.split("\n") || [];
+        console.log(err);
+        if (typeof err?.context == "string") {
+          context = err?.context?.split("\n") || [];
+        }
       }
     } else {
       message = err || "Unknown error";

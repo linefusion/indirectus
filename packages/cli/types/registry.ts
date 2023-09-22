@@ -25,12 +25,16 @@ export class Type {
     return this.raw.schema?.data_type;
   }
 
-  public get typescript() {
-    return Type.to_typescript(this.raw);
+  public get is_json() {
+    return this.database == "json" || this.is_special("cast-json");
+  }
+
+  public is_special(flag: string) {
+    return contains(null as any, this.raw?.meta?.special || [], flag);
   }
 
   public get is_data() {
-    return !Type.is_special(this.raw, "no-data");
+    return !this.is_special("no-data");
   }
 
   public get is_relationship() {
@@ -46,48 +50,6 @@ export class Type {
 
   public get is_system() {
     return "system" in this.raw.meta && this.raw.meta.system;
-  }
-
-  public static is_special(field: DirectusField, tag: string) {
-    const index = field.meta.special?.indexOf(tag);
-    if (typeof index == "undefined") {
-      return false;
-    }
-    return index >= 0;
-  }
-
-  public static to_typescript(field: DirectusField) {
-    const types: Record<Shared.Type, string> = {
-      alias: "string",
-      boolean: "boolean",
-      date: "Date",
-      float: "number",
-      geometry: "Geometry",
-      integer: "number",
-      json: "any",
-      string: "string",
-      text: "string",
-      time: "Date",
-      uuid: "string",
-      "geometry.LineString": "LineString",
-      "geometry.MultiLineString": "MultiLineString",
-      "geometry.MultiPoint": "MultiPoint",
-      "geometry.MultiPolygon": "MultiPolygon",
-      "geometry.Point": "Point",
-      "geometry.Polygon": "Polygon",
-      bigInteger: "number",
-      binary: "string",
-      csv: "string",
-      dateTime: "Date",
-      decimal: "number",
-      hash: "string",
-      timestamp: "Date",
-      unknown: "unknown",
-    };
-
-    const type = field.type as keyof typeof types;
-
-    return type in types ? types[type] : "never";
   }
 }
 
@@ -122,11 +84,23 @@ export class Field {
   }
 
   public get is_translations() {
-    return contains(this.type.raw.meta?.special || [], "translations");
+    return contains(
+      null as any,
+      this.type.raw.meta?.special || [],
+      "translations",
+    );
+  }
+
+  public get is_data() {
+    return !contains(null as any, this.type.raw.meta?.special || [], "no-data");
+  }
+
+  public get is_alias() {
+    return contains(null as any, this.type.raw.meta?.special || [], "alias");
   }
 
   public get translations_collection() {
-    return "TranslationsCollection";
+    return (this.type.relationship as any)?.ref?.collection;
   }
 }
 

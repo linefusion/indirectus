@@ -72,6 +72,10 @@ export default defineCommand({
       console.error(err);
     });
 
+    generator.on("file.format.error", async (file, err) => {
+      console.error("Error formatting file", err);
+    });
+
     generator.on("generation.begin", async () =>
       console.start("Starting generation"),
     );

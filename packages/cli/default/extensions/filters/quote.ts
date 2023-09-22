@@ -1,9 +1,11 @@
-export function quote(v: any) {
-  v = `${v}`;
-  if (typeof v == "string") {
-    return JSON.stringify(v);
-  } else if (Array.isArray(v)) {
-    return v.map((e) => {
+import type { TemplateContext } from "../../../types/template";
+
+export function quote(context: TemplateContext, value: any) {
+  value = `${value}`;
+  if (typeof value == "string") {
+    return JSON.stringify(value);
+  } else if (Array.isArray(value)) {
+    return value.map((e) => {
       if (typeof e == "string") {
         return JSON.stringify(e);
       } else {
@@ -11,7 +13,7 @@ export function quote(v: any) {
       }
     });
   }
-  return v;
+  return value;
 }
 
 export const quoted = quote;

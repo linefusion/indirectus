@@ -72,10 +72,12 @@ export async function fetchSchema(
     const fields = await client.request(readFields());
     const relations = await client.request(readRelations());
 
-    const schema = await fetch(
-      `${directus.url}/schema/snapshot?export=json&access_token=${directus.token}`,
-    );
+    const url = new URL(directus.url);
+    url.pathname = "/schema/snapshot";
+    url.searchParams.set("export", "json");
+    url.searchParams.set("access_token", directus.token);
 
+    const schema = await fetch(url);
     const schemaJson = await schema.json();
 
     raw = {

@@ -1,7 +1,8 @@
 import * as cc from "@wolfpkgs/core/strings";
+import type { TemplateContext } from "../../../types/template";
 
 function stringifyFirst(fn: (...args: any[]) => any) {
-  return (first: any, ...args: any[]) => {
+  return (context: TemplateContext, first: any, ...args: any[]) => {
     return fn(`${first}`, ...args).toString();
   };
 }

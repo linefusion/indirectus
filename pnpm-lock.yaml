@@ -54,6 +54,9 @@ importers:
       prettier:
         specifier: ^3.0.3
         version: 3.0.3
+      ts-pattern:
+        specifier: ^5.0.5
+        version: 5.0.5
     optionalDependencies:
       zod:
         specifier: ^3.22.2

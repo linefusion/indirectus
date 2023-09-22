@@ -1,4 +1,6 @@
-export function comment(str: Array<any> | string) {
+import type { TemplateContext } from "../../../types/template";
+
+export function comment(context: TemplateContext, str: Array<any> | string) {
   if (Array.isArray(str)) {
     str = str.join("\n").replace(/(^\n*)|(\n*$)/gi, "");
   }

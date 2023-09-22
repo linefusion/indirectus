@@ -1,15 +1,17 @@
-import * as fs from "node:fs";
-import * as path from "node:path";
-
-import { grob } from "@wolfpkgs/core/grob";
-
 import * as njk from "nunjucks";
-import * as cc from "@wolfpkgs/core/strings";
 import { TemplateFile, TemplateLoader } from "./template-loader";
+import type { Registry } from "./registry";
+import type { Schema } from "./schema";
 
 export interface TemplateRenderer {
   (file: string, context: any): Promise<string>;
   files: TemplateFile[];
+}
+
+export interface TemplateContext {
+  registry: Registry;
+  schema: Schema;
+  [key: string]: any;
 }
 
 export async function createRenderer(
@@ -22,17 +24,19 @@ export async function createRenderer(
   }
 
   const files = await loader.getFiles();
-  const filters = await loader.getFilters();
-
-  const renderer = new njk.Environment(loader, {
-    autoescape: false,
-  });
-
-  Object.entries(filters).forEach(([name, filter]) => {
-    renderer.addFilter(name, filter);
-  });
-
   async function render(file: string, context: any) {
+    const filters = await loader.getFilters();
+
+    const renderer = new njk.Environment(loader, {
+      autoescape: false,
+    });
+
+    Object.entries(filters).forEach(([name, filter]) => {
+      renderer.addFilter(name, (...args: any[]) => {
+        return filter(context, ...args);
+      });
+    });
+
     return new Promise<string>((resolve, reject) => {
       renderer.render(file, context, (err, result) => {
         if (err) {
