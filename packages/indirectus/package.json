@@ -1,0 +1,40 @@
+{
+  "name": "indirectus",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Directus Tools CLI.",
+  "keywords": [
+    "indirectus",
+    "directus",
+    "sdk",
+    "cli",
+    "typegen",
+    "generator",
+    "type-generator",
+    "typescript"
+  ],
+  "author": {
+    "name": "João Biondo",
+    "email": "wolfulus@gmail.com"
+  },
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "**/*.js",
+    "**/*.d.ts"
+  ],
+  "bin": {
+    "indirectus": "./index.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@indirectus/cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@wolfpkgs/tsconfig": "^0.2.0",
+    "typescript": "^5.2.2"
+  }
+}

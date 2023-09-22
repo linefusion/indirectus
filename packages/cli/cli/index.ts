@@ -9,7 +9,7 @@ process.env = {
   ...env,
 };
 
-export const command = defineCommand({
+const command = defineCommand({
   meta: {
     name: "indirectus",
     description: "Indirectus CLI",
@@ -20,8 +20,10 @@ export const command = defineCommand({
   },
 });
 
-export default command;
+export const execute = createMain(command);
+
+export default execute;
 
 if (require.main === module) {
-  createMain(command)();
+  execute();
 }

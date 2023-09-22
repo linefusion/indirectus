@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@wolfpkgs/tsconfig/default.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ESNext"
+  },
+  "exclude": ["out", "dist", "node_modules", "**/*.test.ts", "**/*.test.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "reflection": true
+}

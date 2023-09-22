@@ -1,5 +1,6 @@
 {
   "name": "@indirectus/workspace",
+  "version": "0.0.0",
   "private": true,
   "devDependencies": {
     "@types/node": "^20.6.3",
