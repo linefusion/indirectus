@@ -281,7 +281,7 @@ export class Generator extends TypedEventEmitter<GeneratorEvents> {
     let context: string[] = [];
 
     if (typeof err != "string" && err != null) {
-      message = err?.message
+      message = (err?.message || "")
         .replace(/, file:/g, "\n")
         .replace(/, line:/g, ":")
         .replace(/, col:/g, ":");

@@ -1,6 +1,5 @@
-import { Field } from "../../../types/registry";
+import { Collection, Field } from "../../../types/registry";
 
-import { contains } from "./contains";
 import { json } from "./json";
 import { quote, quoted } from "./quote";
 
@@ -167,4 +166,21 @@ export function to_ts_type(context: TemplateContext, field: Field) {
   }
 
   return output;
+}
+
+export function only_system_fields(context: TemplateContext, fields: Field[]) {
+  return fields.filter((field) => field.is_system);
+}
+
+export function only_custom_fields(context: TemplateContext, fields: Field[]) {
+  return fields.filter((field) => !field.is_system);
+}
+
+export function only_with_custom_fields(
+  context: TemplateContext,
+  collections: Collection[],
+) {
+  return collections.filter(
+    (field) => field.fields.filter((field) => !field.is_system).length > 0,
+  );
 }

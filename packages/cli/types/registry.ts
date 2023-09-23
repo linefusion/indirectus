@@ -49,7 +49,7 @@ export class Type {
   }
 
   public get is_system() {
-    return "system" in this.raw.meta && this.raw.meta.system;
+    return "system" in this.raw.meta && !!this.raw.meta.system;
   }
 }
 
