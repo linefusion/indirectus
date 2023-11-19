@@ -1,5 +1,5 @@
-import * as fs from "node:fs";
 import type * as Directus from "@directus/sdk";
+import * as fs from "node:fs";
 
 import {
   createDirectus,
@@ -71,6 +71,25 @@ export async function fetchSchema(
     const collections = await client.request(readCollections());
     const fields = await client.request(readFields());
     const relations = await client.request(readRelations());
+
+    // Patch for https://github.com/directus/directus/issues/20475
+    const favicon = relations.find(
+      (r) => r.collection == "directus_settings" && r.field == "public_favicon",
+    );
+    if (favicon && favicon.meta == null) {
+      favicon.meta = {
+        system: true,
+        many_collection: "directus_settings",
+        many_field: "public_favicon",
+        one_collection: "directus_files",
+        one_field: null,
+        one_allowed_collections: null,
+        one_collection_field: null,
+        one_deselect_action: "nullify",
+        junction_field: null,
+        sort_field: null,
+      } as any;
+    }
 
     const url = new URL(directus.url);
     url.pathname = "/schema/snapshot";
