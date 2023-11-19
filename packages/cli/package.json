@@ -35,23 +35,22 @@
     "build:tests": "echo none"
   },
   "dependencies": {
-    "@directus/sdk": "^12.0.0",
-    "@directus/shared": "^9.24.0",
+    "@directus/sdk": "^13.0.2",
     "@wolfpkgs/core": "^0.2.13",
     "chokidar": "^3.5.3",
     "citty": "^0.1.4",
     "consola": "^3.2.3",
     "eventemitter2": "^6.4.9",
-    "jiti": "^1.20.0",
+    "jiti": "^1.21.0",
     "nunjucks": "^3.2.4",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "ts-pattern": "^5.0.5"
   },
   "optionalDependencies": {
-    "zod": "^3.22.2"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/nunjucks": "^3.2.3",
+    "@types/nunjucks": "^3.2.6",
     "@wolfpkgs/tsconfig": "^0.2.0",
     "conditional-type-checks": "^1.0.6",
     "ts-toolbelt": "^9.6.0",

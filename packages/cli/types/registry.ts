@@ -1,15 +1,14 @@
-import * as Shared from "@directus/shared/types";
 import * as cc from "@wolfpkgs/core/strings";
 
 import { contains } from "../default/extensions/filters/contains";
 
+import { Relationship, getRelationship } from "./relationships";
 import {
   DirectusCollection,
   DirectusField,
   DirectusRelation,
   Schema,
 } from "./schema";
-import { Relationship, getRelationship } from "./relationships";
 
 export class Type {
   constructor(
