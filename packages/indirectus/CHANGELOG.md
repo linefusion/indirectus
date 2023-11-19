@@ -1,5 +1,13 @@
 # indirectus
 
+## 0.2.2
+
+### Patch Changes
+
+- Patch for Directus issue #20475
+- Updated dependencies
+  - @indirectus/cli@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

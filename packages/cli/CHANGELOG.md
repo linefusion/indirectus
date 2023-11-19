@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.2.2
+
+### Patch Changes
+
+- Patch for Directus issue #20475
+
 ## 0.2.1
 
 ### Patch Changes
