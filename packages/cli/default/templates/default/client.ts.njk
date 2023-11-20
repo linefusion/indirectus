@@ -15,14 +15,49 @@ import {
 } from "@directus/sdk";
 {% endblock %}
 
+export namespace Types {
 {% block types %}
-export type Nullable<T> = T | null;
-export type Optional<T> = Nullable<T>;
-export type UnknownType<T> = T | unknown;
-export type UUID = string;
-export type BigInt = number;
-{% endblock %}
+  // Internal
+  export type Nullable<T> = T | null;
+  export type Optional<T> = Nullable<T>;
+  export type UnknownType<T> = T | unknown;
 
+  // Numbers
+  export type BigInteger = number;
+  export type Decimal = number;
+  export type Float = number;
+  export type Integer = number;
+  export type Number = number;
+  export type Number = number;
+
+  // Buffers
+  export type Binary = string;
+  export type String = string;
+  export type Text = string;
+
+  // Date & Time
+  export type Date = string | globalThis.Date;
+  export type DateTime = string | globalThis.Date;
+
+  // Geometry
+  export namespace Geometry {
+    export type LineString = any;
+    export type MultiLineString = any;
+    export type MultiPoint = any;
+    export type MultiPolygon = any;
+    export type Point = any;
+    export type Polygon = any;
+  }
+
+  // Complex
+  export type JSON = any;
+  export type JSONSchema = any;
+
+  // Others
+  export type UUID = string;
+  export type Boolean = boolean;
+{% endblock %}
+}
 
 /**
  * System collections.

@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.2.3
+
+### Patch Changes
+
+- add more database types
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # indirectus
 
+## 0.2.3
+
+### Patch Changes
+
+- add more database types
+- Updated dependencies
+  - @indirectus/cli@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
