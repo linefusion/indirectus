@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.2.4
+
+### Patch Changes
+
+- 33083f3: fix error on old versions
+
 ## 0.2.3
 
 ### Patch Changes
