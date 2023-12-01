@@ -100,45 +100,64 @@ export function getRelationship(
     return field.field;
   };
 
-  if (
-    relationship.collection === collection &&
-    relationship.field === field &&
-    relationship.meta?.one_collection_field &&
-    relationship.meta?.one_allowed_collections
-  ) {
-    return {
-      type: "a2o",
-      collection,
-      field,
-      refs: parseCollections(relationship.meta.one_allowed_collections),
-    };
-  }
+  const meta: typeof relationship.meta | null = relationship.meta as any;
 
-  if (relationship.collection === collection && relationship.field === field) {
+  if (meta) {
+    if (
+      relationship.collection === collection &&
+      relationship.field === field &&
+      meta.one_collection_field &&
+      meta.one_allowed_collections
+    ) {
+      return {
+        type: "a2o",
+        collection,
+        field,
+        refs: parseCollections(meta.one_allowed_collections),
+      };
+    }
+
+    if (
+      relationship.collection === collection &&
+      relationship.field === field &&
+      meta.one_collection
+    ) {
+      return {
+        type: "m2o",
+        many: false,
+        collection,
+        field,
+        ref: {
+          collection: meta.one_collection,
+          pk: findPrimaryKey(meta.one_collection),
+        },
+      };
+    }
+
+    if (
+      relationship.related_collection === collection &&
+      meta.one_field === field
+    ) {
+      return {
+        type: "o2m",
+        many: true,
+        collection,
+        field,
+        ref: {
+          collection: meta.many_collection!,
+          pk: findPrimaryKey(meta.many_collection!),
+        },
+      };
+    }
+  } else {
     return {
       type: "m2o",
       many: false,
       collection,
       field,
       ref: {
-        collection: relationship.meta.one_collection!,
-        pk: findPrimaryKey(relationship.meta.one_collection!),
-      },
-    };
-  }
-
-  if (
-    relationship.related_collection === collection &&
-    relationship.meta.one_field === field
-  ) {
-    return {
-      type: "o2m",
-      many: true,
-      collection,
-      field,
-      ref: {
-        collection: relationship.meta.many_collection!,
-        pk: findPrimaryKey(relationship.meta.many_collection!),
+        collection: relationship.related_collection,
+        pk: findPrimaryKey(relationship.related_collection),
       },
     };
   }

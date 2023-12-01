@@ -9,6 +9,7 @@
     "ci": "pnpm ci:build && pnpm ci:version && pnpm ci:publish"
   },
   "devDependencies": {
+    "@directus/sdk": "^13.0.2",
     "@types/node": "^20.9.2",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"

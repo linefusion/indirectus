@@ -100,6 +100,7 @@ export async function fetchSchema(
     const schemaJson = await schema.json();
 
     raw = {
+      // TODO: needs deep merging or fill the meta object
       ...schemaJson,
       fields,
       collections,

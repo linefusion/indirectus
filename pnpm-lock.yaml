@@ -12,6 +12,9 @@ importers:
         specifier: ^2.26.2
         version: 2.26.2
     devDependencies:
+      '@directus/sdk':
+        specifier: ^13.0.2
+        version: 13.0.2
       '@types/node':
         specifier: ^20.9.2
         version: 20.9.2
@@ -313,7 +316,6 @@ packages:
   /@directus/sdk@13.0.2:
     resolution: {integrity: sha512-KECQM0w8xlgr5EklX+Jb9+dIzXyvJFjRfhiIAI7l/b0WEtVaCfvRMIrJXR3XsLeVW9u2nu+b/TffOyTMSLjm2w==}
     engines: {node: '>=18.0.0'}
-    dev: false
 
   /@esbuild/android-arm64@0.18.20:
     resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}
