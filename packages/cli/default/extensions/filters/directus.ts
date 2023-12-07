@@ -250,17 +250,20 @@ export function to_ts_type(context: TemplateContext, field: Field) {
     } else {
       if (field.type.relationship?.type == "o2m") {
         types.push(
-          to_collection_name(context, field.type.relationship.ref.collection),
+          "Collections." +
+            to_collection_name(context, field.type.relationship.ref.collection),
         );
       }
       if (field.type.relationship?.type == "m2o") {
         types.push(
-          to_collection_name(context, field.type.relationship.ref.collection),
+          "Collections." +
+            to_collection_name(context, field.type.relationship.ref.collection),
         );
       }
       if (field.type.relationship?.type == "a2o") {
         field.type.relationship.refs.forEach((ref) => {
-          types.push(to_collection_name(context, ref.collection));
+          "Collections." +
+            types.push(to_collection_name(context, ref.collection));
         });
       }
     }

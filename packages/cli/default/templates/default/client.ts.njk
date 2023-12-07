@@ -59,42 +59,21 @@ export namespace Types {
 }
 
 /**
- * System collections.
+ * All collection types.
  */
-
 export namespace Collections {
+
 {% for collection in registry.collections -%}
 {% if collection.is_system %}
 
 {%- set field_count = collection.fields | only_custom_fields | length -%}
-{%- if field_count > 0 -%}
-  {% filter comment -%}
-  The extra fields added to the {{ collection.name | to_collection_text }} collection.
-  {% endfilter %}
-  export interface Extra{{ collection.name | to_collection_name }} {
-    {%- for field in collection.fields | only_custom_fields %}
-      {%- set type = field | to_ts_type -%}
-      {%- if type != 'never' %}
-        {{ field.name | to_ts_identifier }}: {{ type }};
-      {%- endif -%}
-    {%- endfor %}
-  };
-{% endif %}
-
   {% filter comment -%}
   The resolved {{ collection.name | to_collection_text }} collection type.
   {% endfilter %}
-  export type {{ collection.name | to_collection_name }} = Directus.{{ collection.name | to_collection_name }}<Schema>;
+  export type {{ collection.name | to_collection_name }} = Directus.{{ collection.name | to_collection_name }}<System>;
 {% endif %}
 {% endfor %}
-}
 
-
-
-/**
- * User collections.
- */
-export namespace Collections {
 {% for collection in registry.collections -%}
 {% if not collection.is_system %}
   /**
@@ -112,31 +91,36 @@ export namespace Collections {
 {% endfor %}
 }
 
-
 /**
- * System collections.
+ * System schema extensions.
  */
-export interface Schema {
 
-{% for collection in registry.collections | only_with_custom_fields -%}
-  {% if collection.is_system %}
-  {% set suffix = "" if collection.is_singleton else "[]" %}
+export interface System {
 
-  {%- set field_count = collection.fields | only_custom_fields | length -%}
-  /**
-   * The extended {{ collection.name | to_collection_text }} collection.
-   */
-  {{ collection.name | to_ts_identifier }}: Collections.Extra{{ collection.name | to_collection_name }}{{ suffix }};
-  {% endif %}
+{% for collection in registry.collections -%}
+{% if collection.is_system %}
+
+  {% filter comment -%}
+  The definition for the {{ collection.name | to_collection_text }} system collection.
+  {% endfilter %}
+  {{ collection.name }}: {
+    {%- for field in collection.fields | only_custom_fields %}
+      {%- set type = field | to_ts_type -%}
+      {%- if type != 'never' %}
+        {{ field.name | to_ts_identifier }}: {{ type }};
+      {%- endif -%}
+    {%- endfor %}
+  }{{ "" if collection.is_singleton else "[]" }};
+
+{% endif %}
 {% endfor %}
 
 }
 
-
 /**
- * User collections.
+ * Schema definition.
  */
-export interface Schema {
+export interface Schema extends System {
 {% for collection in registry.collections -%}
   {% if not collection.is_system %}
   {% set suffix = "" if collection.is_singleton else "[]" %}
@@ -146,7 +130,6 @@ export interface Schema {
   {{ collection.name | to_ts_identifier }}: Collections.{{ collection.name | pascal_case }}{{ suffix }};
   {% endif %}
 {% endfor %}
-
 }
 
 
