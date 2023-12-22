@@ -56,7 +56,7 @@ export function to_ts_type(context: TemplateContext, field: Field) {
 
   let types: string[] = [];
   let schema = field.type;
-  let meta = field.type.raw.meta;
+  let meta = field.type.raw?.meta;
   let nullable = false;
   let isUnknown = true;
 
@@ -182,6 +182,7 @@ export function to_ts_type(context: TemplateContext, field: Field) {
     .with("float4", () => "Types.Float")
     .with("float8", () => "Types.Float")
     .with("citext", () => "Types.Text")
+    .with("enum", () => "Types.Enum")
 
     // Oracle
     .with("number", () => "Types.Integer")
@@ -205,12 +206,12 @@ export function to_ts_type(context: TemplateContext, field: Field) {
     }
   }
 
-  switch (meta.interface) {
+  switch (meta?.interface) {
     case "tags":
       types.unshift("Types.String[]");
       break;
     case "select-dropdown":
-      let values = (meta?.options?.choices || []).map((v: any) =>
+      let values = (meta?.options?.choices ?? []).map((v: any) =>
         quote(context, v.value),
       );
       for (let value of values) {
@@ -224,7 +225,7 @@ export function to_ts_type(context: TemplateContext, field: Field) {
       break;
   }
 
-  if (schema.raw.schema?.is_nullable) {
+  if (schema.raw?.schema?.is_nullable) {
     // types.push('null')
     nullable = true;
   }

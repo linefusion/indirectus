@@ -42,7 +42,7 @@ export async function createRenderer(
         if (err) {
           return reject(err);
         }
-        resolve(result || "");
+        resolve(result ?? "");
       });
     });
   }

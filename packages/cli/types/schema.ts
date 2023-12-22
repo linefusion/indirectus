@@ -16,6 +16,10 @@ export type DirectusExtras = {
     system?: boolean;
     sort?: number;
   };
+  directus_fields: {
+    system?: boolean;
+    sort?: number;
+  };
 };
 
 export type DirectusCollection = Directus.DirectusCollection<DirectusExtras>;
@@ -42,8 +46,8 @@ export async function fetchSchema(
     fetch: false,
   },
 ) {
-  const cache = options?.cache || process.env.DIRECTUS_SCHEMA_CACHE;
-  const forceFetch = options?.fetch || false;
+  const cache = options?.cache ?? process.env.DIRECTUS_SCHEMA_CACHE;
+  const forceFetch = options?.fetch ?? false;
 
   let raw: Schema | null = null;
 

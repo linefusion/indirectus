@@ -38,7 +38,7 @@ export class TemplateLoader extends Loader implements ILoaderAsync {
 
     this.templateName = templateName;
 
-    this.projectDirs = projectDirs || [];
+    this.projectDirs = projectDirs ?? [];
 
     this.macroDirs = this.projectDirs
       .map((dir) => path.join(dir, "macros"))

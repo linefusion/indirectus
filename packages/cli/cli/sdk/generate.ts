@@ -28,7 +28,7 @@ export default defineCommand({
       type: "string",
       required: true,
       description: "The URL of the Directus instance to generate an SDK for",
-      default: process.env.DIRECTUS_URL || "http://localhost:8055",
+      default: process.env.DIRECTUS_URL ?? "http://localhost:8055",
       valueHint: "https://some-directus.com",
     },
     token: {

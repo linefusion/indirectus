@@ -3,19 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "quicktest": "pnpm -r run build && pnpm exec indirectus sdk generate --url x --token x",
     "ci:build": "pnpm -r build",
     "ci:version": "pnpm changeset version",
     "ci:publish": "pnpm -r publish --access public",
-    "ci": "pnpm ci:build && pnpm ci:version && pnpm ci:publish"
+    "ci": "pnpm ci:version && pnpm ci:build && pnpm ci:publish"
   },
   "devDependencies": {
-    "@directus/sdk": "^13.0.2",
-    "@types/node": "^20.9.2",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "@directus/sdk": "^14.0.0",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
   },
   "dependencies": {
-    "@changesets/cli": "^2.26.2"
+    "@changesets/cli": "^2.27.1"
   },
   "files": []
 }

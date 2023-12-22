@@ -12,16 +12,16 @@ import {
 
 export class Type {
   constructor(
-    public readonly raw: DirectusField,
+    public readonly raw: Partial<DirectusField> | null,
     public readonly raw_relation: Relationship | null,
   ) {}
 
   public get directus() {
-    return this.raw.type;
+    return this.raw?.type ?? "unknown";
   }
 
   public get database() {
-    return this.raw.schema?.data_type;
+    return this.raw?.schema?.data_type ?? "unknown";
   }
 
   public get is_json() {
@@ -29,7 +29,7 @@ export class Type {
   }
 
   public is_special(flag: string) {
-    return contains(null as any, this.raw?.meta?.special || [], flag);
+    return contains(null as any, this.raw?.meta?.special ?? [], flag);
   }
 
   public get is_data() {
@@ -48,7 +48,7 @@ export class Type {
   }
 
   public get is_system() {
-    return "system" in this.raw.meta && !!this.raw.meta.system;
+    return "system" in (this.raw?.meta ?? {}) && !!this.raw?.meta?.system;
   }
 }
 
@@ -85,17 +85,21 @@ export class Field {
   public get is_translations() {
     return contains(
       null as any,
-      this.type.raw.meta?.special || [],
+      this.type.raw?.meta?.special ?? [],
       "translations",
     );
   }
 
   public get is_data() {
-    return !contains(null as any, this.type.raw.meta?.special || [], "no-data");
+    return !contains(
+      null as any,
+      this.type.raw?.meta?.special ?? [],
+      "no-data",
+    );
   }
 
   public get is_alias() {
-    return contains(null as any, this.type.raw.meta?.special || [], "alias");
+    return contains(null as any, this.type.raw?.meta?.special ?? [], "alias");
   }
 
   public get translations_collection() {
@@ -112,11 +116,11 @@ export class Collection {
   }
 
   public get is_system() {
-    return this.raw.meta.system || false;
+    return this.raw.meta?.system ?? false;
   }
 
   public get is_singleton() {
-    return this.raw.meta.singleton;
+    return this.raw.meta?.singleton ?? false;
   }
 }
 
@@ -173,7 +177,7 @@ export class Registry {
         } else if (!a.is_system && b.is_system) {
           return 1;
         }
-        return (a.type.raw.meta?.sort || 0) - (b.type.raw.meta?.sort || 0);
+        return (a.type.raw?.meta?.sort ?? 0) - (b.type.raw?.meta?.sort ?? 0);
       });
 
       for (const relation of $.relations) {

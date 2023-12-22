@@ -7,7 +7,7 @@ export function entries(
   valueName?: string,
 ) {
   return Object.entries(obj).map(([key, value]) => ({
-    [keyName || "key"]: key,
-    [valueName || "value"]: value,
+    [keyName ?? "key"]: key,
+    [valueName ?? "value"]: value,
   }));
 }

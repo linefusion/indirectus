@@ -26,11 +26,11 @@ export const GeneratorOptions = Options.for(() => {
     url: z
       .string()
       .optional()
-      .default(e.DIRECTUS_URL || "http://localhost:8055"),
+      .default(e.DIRECTUS_URL ?? "http://localhost:8055"),
     token: z
       .string()
       .optional()
-      .default(e.DIRECTUS_TOKEN || ""),
+      .default(e.DIRECTUS_TOKEN ?? ""),
     template: z.string().optional().default("default"),
     config: z.string().optional().default("./.directus"),
     output: z
@@ -174,7 +174,7 @@ export class Generator extends TypedEventEmitter<GeneratorEvents> {
     await this.initialize();
 
     await this.runTask("generation", async () => {
-      const templateName = template || this.options.template;
+      const templateName = template ?? this.options.template;
       const templateDirs = [
         path.join(__dirname, "../default"),
         path.join(__dirname, "../../default"),
@@ -187,7 +187,7 @@ export class Generator extends TypedEventEmitter<GeneratorEvents> {
       });
 
       const render =
-        this.engines[key] || (await createRenderer(templateName, templateDirs));
+        this.engines[key] ?? (await createRenderer(templateName, templateDirs));
       if (!(key in this.engines)) {
         this.engines[key] = render;
       }
@@ -281,18 +281,18 @@ export class Generator extends TypedEventEmitter<GeneratorEvents> {
     let context: string[] = [];
 
     if (typeof err != "string" && err != null) {
-      message = (err?.message || "")
+      message = (err?.message ?? "")
         .replace(/, file:/g, "\n")
         .replace(/, line:/g, ":")
         .replace(/, col:/g, ":");
       if (err?.context) {
         console.log(err);
         if (typeof err?.context == "string") {
-          context = err?.context?.split("\n") || [];
+          context = err?.context?.split("\n") ?? [];
         }
       }
     } else {
-      message = err || "Unknown error";
+      message = err ?? "Unknown error";
     }
 
     if (typeof err == "string") {

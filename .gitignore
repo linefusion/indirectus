@@ -10,3 +10,5 @@ dist
 **/*.js.map
 
 **/*.tgz
+
+/test.ts
