@@ -1,5 +1,16 @@
 # indirectus
 
+## 0.3.0
+
+### Minor Changes
+
+- be0fb6b: Fixes and improvements
+
+### Patch Changes
+
+- Updated dependencies [be0fb6b]
+  - @indirectus/cli@0.3.0
+
 ## 0.2.5
 
 ### Patch Changes

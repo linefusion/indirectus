@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- be0fb6b: Fixes and improvements
+
 ## 0.2.5
 
 ### Patch Changes
