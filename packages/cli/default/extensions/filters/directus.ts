@@ -267,6 +267,9 @@ export function to_ts_type(context: TemplateContext, field: Field) {
             types.push(to_collection_name(context, ref.collection));
         });
       }
+      if (field.type.relationship?.type == "unmapped") {
+        types.push("any");
+      }
     }
   }
 

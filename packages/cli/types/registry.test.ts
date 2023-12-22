@@ -2,7 +2,7 @@ import { beforeAll, describe, it } from "vitest";
 
 import { loadSync } from "@wolfpkgs/core/env";
 import { Registry, createRegistry } from "./registry";
-import { fetchSchema } from "./types/schema";
+import { fetchSchema } from "./schema";
 
 describe("registry", async () => {
   let env: Record<string, string> = {};

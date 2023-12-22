@@ -8,6 +8,7 @@ import {
   GeneratorOptions,
   createGenerator,
 } from "../../types/generator";
+import path from "node:path";
 
 (async function main() {
   try {
@@ -29,25 +30,32 @@ export default defineCommand({
       required: true,
       description: "The URL of the Directus instance to generate an SDK for",
       default: process.env.DIRECTUS_URL ?? "http://localhost:8055",
-      valueHint: "https://some-directus.com",
+      valueHint: process.env.DIRECTUS_URL ?? "http://localhost:8055",
     },
     token: {
       type: "string",
       required: true,
       description: "An static token with admin role assigned.",
-      default: process.env.DIRECTUS_TOKEN,
+      default: process.env.DIRECTUS_TOKEN ?? undefined,
       valueHint: "static-token",
     },
-    template: {
+    dir: {
       type: "string",
-      required: true,
-      description: "Which SDK template to use.",
-      default: "default",
-      valueHint: "template-name",
+      required: false,
+      description: "Set a custom directory instead of '.directus'",
+      default: "./.directus/",
+      valueHint: "./.directus/",
+    },
+    outputDir: {
+      type: "string",
+      required: false,
+      description: "Set a custom directory instead of '.directus'",
+      default: "./.directus/generated",
+      valueHint: "./.directus/generated",
     },
     fetch: {
       type: "boolean",
-      required: true,
+      required: false,
       description: "Whether to force fetch the schema from the server.",
       default: false,
     },
@@ -57,7 +65,10 @@ export default defineCommand({
     const options = await GeneratorOptions.get({
       url: context.args.url,
       token: context.args.token,
-      template: context.args.template,
+      config: context.args.dir,
+      output:
+        context.args.outputDir ?? path.join(context.args.dir, "generated"),
+      template: "default",
       fetch: context.args.fetch,
     });
 

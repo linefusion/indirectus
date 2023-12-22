@@ -2,7 +2,7 @@ import * as cc from "@wolfpkgs/core/strings";
 
 import { contains } from "../default/extensions/filters/contains";
 
-import { Relationship, getRelationship } from "./relationships";
+import { Relationship, getRelationship, isUnmapped } from "./relationships";
 import {
   DirectusCollection,
   DirectusField,
@@ -38,6 +38,14 @@ export class Type {
 
   public get is_relationship() {
     return this.raw_relation !== null && this.raw_relation !== undefined;
+  }
+
+  public get is_unmapped() {
+    return (
+      this.raw_relation !== null &&
+      this.raw_relation !== undefined &&
+      isUnmapped(this.raw_relation)
+    );
   }
 
   public get relationship() {

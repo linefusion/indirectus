@@ -28,7 +28,18 @@ export type AnyToOne = {
   refs: RelationshipReference[];
 };
 
-export type Relationship = OneToMany | ManyToOne | AnyToOne | null;
+export type Unmapped = {
+  type: "unmapped";
+  collection: string;
+};
+
+export type Relationship = Unmapped | OneToMany | ManyToOne | AnyToOne | null;
+
+export class UnmappedRelationship extends Error {
+  public constructor(public readonly collection: string) {
+    super("Can't find primary key for collection " + collection);
+  }
+}
 
 export function isRelationship(
   relationship?: Relationship,
@@ -40,6 +51,12 @@ export function isOneToMany(
   relationship?: Relationship,
 ): relationship is OneToMany {
   return relationship?.type === "o2m";
+}
+
+export function isUnmapped(
+  relationship?: Relationship,
+): relationship is Unmapped {
+  return relationship?.type === "unmapped";
 }
 
 export function isManyToOne(
@@ -95,71 +112,80 @@ export function getRelationship(
         candidate.collection == collection && candidate.schema?.is_primary_key,
     );
     if (!field) {
-      throw new Error(`Cannot find primary key for ${collection}`);
+      throw new UnmappedRelationship(collection);
     }
     return field.field;
   };
 
   const meta: typeof relationship.meta | null = relationship.meta as any;
 
-  if (meta) {
-    if (
-      relationship.collection === collection &&
-      relationship.field === field &&
-      meta.one_collection_field &&
-      meta.one_allowed_collections
-    ) {
-      return {
-        type: "a2o",
-        collection,
-        field,
-        refs: parseCollections(meta.one_allowed_collections),
-      };
-    }
+  try {
+    if (meta) {
+      if (
+        relationship.collection === collection &&
+        relationship.field === field &&
+        meta.one_collection_field &&
+        meta.one_allowed_collections
+      ) {
+        return {
+          type: "a2o",
+          collection,
+          field,
+          refs: parseCollections(meta.one_allowed_collections),
+        };
+      }
 
-    if (
-      relationship.collection === collection &&
-      relationship.field === field &&
-      meta.one_collection
-    ) {
+      if (
+        relationship.collection === collection &&
+        relationship.field === field &&
+        meta.one_collection
+      ) {
+        return {
+          type: "m2o",
+          many: false,
+          collection,
+          field,
+          ref: {
+            collection: meta.one_collection,
+            pk: findPrimaryKey(meta.one_collection),
+          },
+        };
+      }
+
+      if (
+        relationship.related_collection === collection &&
+        meta.one_field === field
+      ) {
+        return {
+          type: "o2m",
+          many: true,
+          collection,
+          field,
+          ref: {
+            collection: meta.many_collection!,
+            pk: findPrimaryKey(meta.many_collection!),
+          },
+        };
+      }
+    } else {
       return {
         type: "m2o",
         many: false,
         collection,
         field,
         ref: {
-          collection: meta.one_collection,
-          pk: findPrimaryKey(meta.one_collection),
+          collection: relationship.related_collection,
+          pk: findPrimaryKey(relationship.related_collection),
         },
       };
     }
-
-    if (
-      relationship.related_collection === collection &&
-      meta.one_field === field
-    ) {
+  } catch (e) {
+    if (e instanceof UnmappedRelationship) {
       return {
-        type: "o2m",
-        many: true,
-        collection,
-        field,
-        ref: {
-          collection: meta.many_collection!,
-          pk: findPrimaryKey(meta.many_collection!),
-        },
+        type: "unmapped",
+        collection: e.collection,
       };
     }
-  } else {
-    return {
-      type: "m2o",
-      many: false,
-      collection,
-      field,
-      ref: {
-        collection: relationship.related_collection,
-        pk: findPrimaryKey(relationship.related_collection),
-      },
-    };
   }
 
   return null;
