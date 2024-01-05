@@ -1,5 +1,13 @@
 # indirectus
 
+## 0.3.1
+
+### Patch Changes
+
+- fix m2m relationships
+- Updated dependencies
+  - @indirectus/cli@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes

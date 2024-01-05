@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- fix m2m relationships
+
 ## 0.3.0
 
 ### Minor Changes
