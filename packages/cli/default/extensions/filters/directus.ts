@@ -9,6 +9,7 @@ import { drop_first } from "./drop_first";
 import { regex_replace } from "./regex_replace";
 import { split } from "./split";
 import { lower_case, pascal_case, space_case } from "./string_cases";
+import { isManyToOne, isOneToMany } from "../../../types/relationships";
 
 export function to_collection_text(
   context: TemplateContext,
@@ -58,16 +59,6 @@ export function to_ts_type(context: TemplateContext, field: Field) {
   let schema = field.type;
   let meta = field.type.raw?.meta;
   let nullable = false;
-  let isUnknown = true;
-
-  const _push = types.push;
-  types.push = (...args: string[]): number => {
-    isUnknown = false;
-    return _push.apply(
-      types,
-      args.filter((v) => v != "never"),
-    );
-  };
 
   let db_type = match(
     field?.type?.database?.split("(", 2)[0]!.toLowerCase().trim(),
@@ -235,36 +226,53 @@ export function to_ts_type(context: TemplateContext, field: Field) {
   }
 
   if (field.type.is_relationship) {
-    if (
-      field.type.is_special("user-created") ||
-      field.type.is_special("user-updated")
-    ) {
-      types.push("Collections.DirectusUser");
-    } else if (field.type.is_special("file")) {
-      types.push("Collections.DirectusFile");
-    } else if (field.type.is_special("files")) {
-      types.push("Collections.DirectusFile[]");
-    } else if (field.is_translations) {
+    //if (
+    //  field.type.is_special("user-created") ||
+    //  field.type.is_special("user-updated")
+    //) {
+    //  types.push("Collections.DirectusUser");
+    //} else if (field.type.is_special("file")) {
+    //  types.push("Collections.DirectusFile");
+    //} else if (field.type.is_special("files")) {
+    //  types.push("Collections.DirectusFile[]");
+    //} else
+    if (field.is_translations) {
       types.push(
         `${to_collection_name(context, field.translations_collection)}[]`,
       );
     } else {
+      let suffix =
+        ((isManyToOne(field.type.relationship) ||
+          isOneToMany(field.type.relationship)) &&
+          field.type.relationship.many) ??
+        field.type.is_special("m2m")
+          ? "[]"
+          : "";
+
       if (field.type.relationship?.type == "o2m") {
         types.push(
-          "Collections." +
-            to_collection_name(context, field.type.relationship.ref.collection),
+          `Collections.${to_collection_name(
+            context,
+            field.type.relationship.ref.collection,
+          )}${suffix}`,
         );
       }
       if (field.type.relationship?.type == "m2o") {
         types.push(
-          "Collections." +
-            to_collection_name(context, field.type.relationship.ref.collection),
+          `Collections.${to_collection_name(
+            context,
+            field.type.relationship.ref.collection,
+          )}${suffix}`,
         );
       }
       if (field.type.relationship?.type == "a2o") {
         field.type.relationship.refs.forEach((ref) => {
-          "Collections." +
-            types.push(to_collection_name(context, ref.collection));
+          types.push(
+            `Collections.${to_collection_name(
+              context,
+              ref.collection,
+            )}${suffix}`,
+          );
         });
       }
       if (field.type.relationship?.type == "unmapped") {
