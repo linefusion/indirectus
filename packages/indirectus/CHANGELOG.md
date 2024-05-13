@@ -1,5 +1,13 @@
 # indirectus
 
+## 0.4.1
+
+### Patch Changes
+
+- path fix
+- Updated dependencies
+  - @indirectus/cli@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes
