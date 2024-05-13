@@ -122,7 +122,7 @@ export async function fetchSchema(
     }
 
     const url = new URL(directus.url);
-    url.pathname = "/schema/snapshot";
+    url.pathname += "/schema/snapshot";
     url.searchParams.set("export", "json");
     url.searchParams.set("access_token", directus.token);
 
