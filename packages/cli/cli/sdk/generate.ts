@@ -2,11 +2,10 @@ import { defineCommand } from "citty";
 import console from "../console";
 
 import { Options } from "@wolfpkgs/core/options";
-import { argsToOptions } from "@wolfpkgs/core/arguments";
+
 import {
   Generator,
   GeneratorOptions,
-  createGenerator,
 } from "../../types/generator";
 import path from "node:path";
 
@@ -53,10 +52,10 @@ export default defineCommand({
       default: "./.directus/generated",
       valueHint: "./.directus/generated",
     },
-    fetch: {
+    cache: {
       type: "boolean",
       required: false,
-      description: "Whether to force fetch the schema from the server.",
+      description: "Whether to enable caching to avoid subsequent requests to the server.",
       default: false,
     },
   },
@@ -69,7 +68,7 @@ export default defineCommand({
       output:
         context.args.outputDir ?? path.join(context.args.dir, "generated"),
       template: "default",
-      fetch: context.args.fetch,
+      useCache: context.args.cache,
     });
 
     const generator = new Generator(options);

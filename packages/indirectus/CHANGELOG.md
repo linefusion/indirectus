@@ -1,5 +1,16 @@
 # indirectus
 
+## 0.4.0
+
+### Minor Changes
+
+- improved error handling, change cache behavior
+
+### Patch Changes
+
+- Updated dependencies
+  - @indirectus/cli@0.4.0
+
 ## 0.3.1
 
 ### Patch Changes

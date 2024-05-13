@@ -43,7 +43,7 @@ export const GeneratorOptions = Options.for(() => {
         }
         return value;
       }),
-    fetch: z.boolean().default(false),
+    useCache: z.boolean().default(false),
     watch: z.boolean().default(false),
     log: z.string().optional().default("info"),
   };
@@ -153,7 +153,7 @@ export class Generator extends TypedEventEmitter<GeneratorEvents> {
           },
           {
             cache: path.join(this.options.config, "cache/schema.json"),
-            fetch: this.options.fetch,
+            useCache: this.options.useCache,
           },
         );
         this.registry = createRegistry(this.schema);

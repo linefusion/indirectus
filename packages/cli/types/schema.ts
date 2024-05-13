@@ -41,13 +41,14 @@ export async function fetchSchema(
   directus: { url: string; token: string },
   options: {
     cache?: string;
-    fetch?: boolean;
+    useCache?: boolean;
   } = {
-    fetch: false,
+    useCache: false,
   },
 ) {
   const cache = options?.cache ?? process.env.DIRECTUS_SCHEMA_CACHE;
-  const forceFetch = options?.fetch ?? false;
+  const useCache =
+    options?.useCache ?? (process.env.DIRECTUS_SCHEMA_CACHE && true);
 
   let raw: Schema | null = null;
 
@@ -61,14 +62,39 @@ export async function fetchSchema(
       if (!fs.statSync(cache).isFile()) {
         throw new Error("Cache path is not a file");
       }
-      if (!forceFetch) {
-        raw = JSON.parse(fs.readFileSync(cache, "utf-8")) as any;
+      if (useCache) {
+        try {
+          raw = JSON.parse(fs.readFileSync(cache, "utf-8")) as any;
+        } catch (e) {
+          raw = null;
+        }
       }
     }
   }
 
   if (!raw) {
-    const client = createDirectus<{}>(directus.url)
+    interface Schema {
+      directus_users: {
+        wtf: string;
+      };
+    }
+
+    try {
+      const url = directus.url.replace(/\/$/, "") + "/server/ping";
+      const res = await fetch(url);
+      const pong = await res.text();
+      if (pong != "pong") {
+        throw new Error(
+          `Server did not respond with 'pong'.\nPerhaps URL is invalid: ${directus.url}\n\nATTENTION:Note that the URL must point to Directus root (for example, do not include /admin)`,
+        );
+      }
+    } catch (e) {
+      throw new Error(
+        `Failed to ping Directus server at ${directus.url}: ${e.message}`,
+      );
+    }
+
+    const client = createDirectus<Schema>(directus.url)
       .with(rest())
       .with(staticToken(directus.token));
 
@@ -100,12 +126,32 @@ export async function fetchSchema(
     url.searchParams.set("export", "json");
     url.searchParams.set("access_token", directus.token);
 
-    const schema = await fetch(url);
-    const schemaJson = await schema.json();
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch schema (returned status ${response.status}): ${
+          response.statusText
+        }\n${await response.text()}`,
+      );
+    }
+
+    let body: string = "";
+    let schema: any = undefined;
+
+    try {
+      body = await response.text();
+      schema = JSON.parse(body);
+    } catch (e) {
+      throw new Error(
+        `Server did not return JSON on schema export (${
+          response.headers.get("content-type") ?? "<missing content type>"
+        }): ${body}`,
+      );
+    }
 
     raw = {
       // TODO: needs deep merging or fill the meta object
-      ...schemaJson,
+      ...schema,
       fields,
       collections,
       relations,

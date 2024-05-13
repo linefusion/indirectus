@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- improved error handling, change cache behavior
+
 ## 0.3.1
 
 ### Patch Changes

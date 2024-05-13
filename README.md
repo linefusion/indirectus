@@ -33,3 +33,14 @@ The `.directus/generated/client.ts` exports:
 
 - https://github.com/linefusion/indirectus/
 - https://www.npmjs.com/package/indirectus
+
+# Contributing
+
+Easiest way to develop, build and test is:
+
+- Make sure to `pnpm install`
+- Keep a terminal running `pnpm dev`
+- Test CLI commands with `pnpm indirectus`, for example `pnpm indirectus sdk generate`
+  - To make it easier, create a `.env` file on the workspace root containing your server settings
+    - `DIRECTUS_URL=http://....`
+    - `DIRECTUS_TOKEN=.....`
