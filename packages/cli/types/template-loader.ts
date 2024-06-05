@@ -145,7 +145,6 @@ export class TemplateLoader extends Loader implements ILoaderAsync {
     const files: string[] = await this.getFilterFiles();
     const filters: Record<string, (...args: any[]) => any> = {};
 
-    console.log({filters});
     for (const file of files) {
       let filter: any = load(file);
       if (typeof filter === "object") {

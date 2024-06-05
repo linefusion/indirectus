@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 1.0.1
+
+### Patch Changes
+
+- fix: console output
+
 ## 1.0.0
 
 ### Major Changes

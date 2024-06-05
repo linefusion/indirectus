@@ -20,6 +20,7 @@ export namespace Types {
   export type Nullable<T> = T | null;
   export type Optional<T> = Nullable<T>;
   export type UnknownType<T> = T | unknown;
+  export type PrimaryKey<T> = T;
 
   // Numbers
   export type BigInteger = number;
@@ -581,3 +582,5 @@ export function createDirectusWithTypes(
     .with(DirectusSDK.rest())
     .with(schema());
 }
+
+export const createTypedClient = createDirectusWithTypes;

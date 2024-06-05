@@ -293,6 +293,10 @@ export function to_ts_type(context: TemplateContext, field: Field) {
     output = `Types.Optional<${output}>`;
   }
 
+  if (field.type.raw?.schema?.is_primary_key ?? false) {
+    output = `Types.PrimaryKey<${output}>`;
+  }
+
   return output;
 }
 
