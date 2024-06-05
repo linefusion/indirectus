@@ -573,7 +573,7 @@ export const bindings = () => {
   };
 };
 
-export function createDirectus(
+export function createDirectusWithTypes(
   url: string,
 ): Directus.DirectusClient<Schema> & Directus.RestClient<Schema> & TypedClient {
   return DirectusSDK.createDirectus<Schema>(url)
