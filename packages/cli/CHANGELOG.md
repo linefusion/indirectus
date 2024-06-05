@@ -1,5 +1,13 @@
 # @indirectus/cli
 
+## 1.0.0
+
+### Major Changes
+
+- 4d03dc7: - Added an alternative `createDirectus` helper function.
+  - Added a `bindings` extension to keep the same instance when adding extensions.
+  - Added a `schema` extension that adds OOP style methods.
+
 ## 0.4.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@indirectus/cli",
-  "version": "0.4.1",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "Directus Tools CLI.",
   "keywords": [
