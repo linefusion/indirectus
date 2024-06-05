@@ -7,12 +7,11 @@
 
 {% block imports %}
 import type * as Directus from "@directus/sdk";
-import type { Query as Query$ } from "@directus/sdk";
-import {
-  readSingleton as readSingleton$,
-  readItems as readItems$,
-  readItem as readItem$
-} from "@directus/sdk";
+
+import * as DirectusSDK from "@directus/sdk";
+
+type DirectusSDK = typeof DirectusSDK;
+
 {% endblock %}
 
 export namespace Types {
@@ -134,42 +133,256 @@ export interface Schema extends System {
 {% endfor %}
 }
 
+export interface TypedCollectionItemsWrapper<Collection extends object>
+{
+  /**
+   * Creates many items in the collection.
+   */
+  create<const Query extends DirectusSDK.Query<Schema, Collection>>(items: Partial<Collection>[], query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']>[]>;
+
+  /**
+   * Read many items from the collection.
+   */
+  query<const Query extends DirectusSDK.Query<Schema, Collection>>(query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']>[]>;
+
+  /**
+   * Read the first item from the collection matching the query.
+   */
+  find<const Query extends DirectusSDK.Query<Schema, Collection>>(query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']> | undefined>;
+
+  /**
+   * Update many items in the collection.
+   */
+  update<const Query extends DirectusSDK.Query<Schema, Collection[]>>(keys: string[] | number[], patch: Partial<Collection>, query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']>[]>;
+
+  /**
+   * Remove many items in the collection.
+   */
+  remove<const Query extends DirectusSDK.Query<Schema, Collection>>(keys: string[] | number[]): Promise<void>;
+}
+
+export interface TypedCollectionItemWrapper<Collection extends object>
+{
+  /**
+   * Create a single item in the collection.
+   */
+  create<const Query extends DirectusSDK.Query<Schema, Collection>>(item: Partial<Collection>, query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']>>;
+
+  /**
+   * Read a single item from the collection.
+   */
+  get<const Query extends DirectusSDK.Query<Schema, Collection>>(key: string | number, query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']> | undefined>;
+
+  /**
+   * Update a single item from the collection.
+   */
+  update<const Query extends DirectusSDK.Query<Schema, Collection>>(key: string | number, patch: Partial<Collection>, query?: Query): Promise<DirectusSDK.ApplyQueryFields<Schema, Collection, Query['fields']> | undefined>;
+
+  /**
+   * Remove many items in the collection.
+   */
+  remove<const Query extends DirectusSDK.Query<Schema, Collection>>(key: string | number): Promise<void>;
+}
 
 /**
  * Helper functions
  */
 
 {% for collection in registry.collections -%}
+
+{% set collectionName = collection.name | to_collection_name %}
+{% set collectionString = collection.name | to_collection_string %}
+{% set collectionType = ["Collections.", collection.name | to_collection_name] | join %}
+{% set genericQuery = ["const Query extends Directus.Query<Schema, ", collectionType, ">"] | join %}
+{% set genericQueryArray = ["const Query extends Directus.Query<Schema, ", collectionType, "[]>"] | join %}
+{% set applyType  = ["DirectusSDK.ApplyQueryFields<Schema, ", collectionType, ", Query['fields']>"] | join %}
+
 {% if not collection.is_system %}
 
 {% if collection.is_singleton %}
 /**
  * Reads the {{ collection.name | to_collection_text }} singleton.
  */
-export function get{{ collection.name | to_collection_name }}<
-  const Query extends Query$<Schema, Collections.{{ collection.name | to_collection_name }}>,
+export function read{{ collectionName }}<
+  {{ genericQuery }},
 >(query?: Query) {
-  return readSingleton$<Schema, {{ collection.name | to_collection_string }}, Query>("{{ collection.name }}", query);
+  return DirectusSDK.readSingleton<Schema, {{ collectionString }}, Query>("{{ collection.name }}", query);
 }
 
 {% else %}
 
 /**
- * List {{ collection.name | to_collection_text }} items.
+ * Create many {{ collection.name | to_collection_text }} items.
  */
-export function list{{ collection.name | to_collection_name }}<
-  const Query extends Query$<Schema, Collections.{{ collection.name | to_collection_name }}>,
+export function create{{ collectionName }}Items<
+  {{ genericQueryArray}}
+>(items: Partial<{{ collectionType }}>[], query?: Query) {
+  return DirectusSDK.createItems<Schema, {{ collectionString }}, Query>("{{ collection.name }}", items, query);
+}
+
+/**
+ * Create a single {{ collection.name | to_collection_text }} item.
+ */
+export function create{{ collectionName }}Item<
+  const Query extends DirectusSDK.Query<Schema, {{ collectionType }}[]> // Is this a mistake? Why []?
+>(item: Partial<{{ collectionType }}>, query?: Query) {
+  return DirectusSDK.createItem<Schema, {{ collectionString }}, Query>("{{ collection.name }}", item, query);
+}
+
+/**
+ * Read many {{ collection.name | to_collection_text }} items.
+ */
+export function read{{ collectionName }}Items<
+  {{ genericQuery }},
 >(query?: Query) {
-  return readItems$<Schema, {{ collection.name | to_collection_string }}, Query>("{{ collection.name }}", query);
+  return DirectusSDK.readItems<Schema, {{ collectionString }}, Query>("{{ collection.name }}", query);
 }
 
 /**
  * Gets a single known {{ collection.name | to_collection_text }} item by id.
  */
-export function read{{ collection.name | to_collection_name }}<
-  const Query extends Query$<Schema, Collections.{{ collection.name | to_collection_name }}>,
+export function read{{ collectionName }}Item<
+  {{ genericQuery }},
 >(key: string | number, query?: Query) {
-  return readItem$<Schema, {{ collection.name | to_collection_string }}, Query>("{{ collection.name }}", key, query);
+  return DirectusSDK.readItem<Schema, {{ collectionString }}, Query>("{{ collection.name }}", key, query);
+}
+
+/**
+ * Read many {{ collection.name | to_collection_text }} items.
+ */
+export function update{{ collectionName }}Items<
+  {{ genericQueryArray }},
+>(keys: string[] | number[], patch: Partial<{{ collectionType }}>, query?: Query) {
+  return DirectusSDK.updateItems<Schema, {{ collectionString }}, Query>("{{ collection.name }}", keys, patch, query);
+}
+
+/**
+ * Gets a single known {{ collection.name | to_collection_text }} item by id.
+ */
+export function update{{ collectionName }}Item<
+  {{ genericQueryArray }},
+>(key: string | number, patch: Partial<{{ collectionType }}>, query?: Query) {
+  return DirectusSDK.updateItem<Schema, {{ collectionString }}, Query>("{{ collection.name }}", key, patch, query);
+}
+
+
+
+/**
+ * Deletes many {{ collection.name | to_collection_text }} items.
+ */
+export function delete{{ collectionName }}Items<
+  {{ genericQueryArray }},
+>(keys: string[] | number[]) {
+  return DirectusSDK.deleteItems<Schema, {{ collectionString }}, Query>("{{ collection.name }}", keys);
+}
+
+/**
+ * Deletes a single known {{ collection.name | to_collection_text }} item by id.
+ */
+export function delete{{ collectionName }}Item(key: string | number) {
+  return DirectusSDK.deleteItem<Schema, {{ collectionString }}>("{{ collection.name }}", key);
+}
+
+export class {{ collectionName }}Items implements TypedCollectionItemsWrapper<{{ collectionType }}>
+{
+  /**
+   *
+   */
+  constructor(private client: Directus.DirectusClient<Schema> & Directus.RestClient<Schema>)
+  {
+  }
+
+  /**
+   * Creates many items in the collection.
+   */
+  async create<
+    const Query extends DirectusSDK.Query<Schema, {{ collectionType }}>
+  >(
+      items: Partial<{{ collectionType }}>[],
+      query?: Query
+  ): Promise<
+      {{ applyType }}[]
+  > {
+    return await this.client.request(create{{ collectionName }}Items(items, query as any)) as any; // Seems like a bug in the SDK.
+  }
+
+  /**
+   * Read many items from the collection.
+   */
+  async query<{{ genericQuery }}>(query?: Query): Promise<{{ applyType }}[]>
+  {
+    return await this.client.request(read{{ collectionName }}Items(query));
+  }
+
+  /**
+   * Read the first item from the collection matching the query.
+   */
+  async find<{{ genericQuery }}>(query?: Query): Promise<{{ applyType }} | undefined>
+  {
+    const items = await this.client.request(read{{ collectionName }}Items({
+      ...query,
+      limit: 1,
+    }));
+    return items?.[0] as any; // TODO: fix
+  }
+
+  /**
+   * Update many items in the collection.
+   */
+  async update<{{ genericQueryArray }}>(keys: string[] | number[], patch: Partial<{{ collectionType }}>, query?: Query): Promise<{{ applyType }}[]>
+  {
+    return await this.client.request(update{{ collectionName }}Items(keys, patch, query));
+  }
+
+  /**
+   * Remove many items in the collection.
+   */
+  async remove<{{ genericQuery }}>(keys: string[] | number[]): Promise<void>
+  {
+
+  }
+}
+
+export class {{ collectionName }}Item implements TypedCollectionItemWrapper<{{ collectionType }}>
+{
+  /**
+   *
+   */
+  constructor(private client: Directus.DirectusClient<Schema> & Directus.RestClient<Schema>)
+  {
+  }
+
+  /**
+   * Create a single item in the collection.
+   */
+  async create<{{ genericQuery }}>(item: Partial<{{ collectionType }}>, query?: Query): Promise<{{ applyType }}>
+  {
+    return await this.client.request(create{{ collectionName }}Item(item, query as any)) as any;
+  }
+
+  /**
+   * Read a single item from the collection.
+   */
+  async get<{{ genericQuery }}>(key: string | number, query?: Query): Promise<{{ applyType }} | undefined>
+  {
+    return await this.client.request(read{{ collectionName }}Item(key, query));
+  }
+
+  /**
+   * Update a single item from the collection.
+   */
+  async update<{{ genericQuery }}>(key: string | number, patch: Partial<{{ collectionType }}>, query?: Query): Promise<{{ applyType }} | undefined>
+  {
+    return await this.client.request(update{{ collectionName }}Item(key, patch, query as any)) as any;
+  }
+
+  /**
+   * Remove many items in the collection.
+   */
+  async remove<{{ genericQuery }}>(key: string | number): Promise<void>
+  {
+    return await this.client.request(delete{{ collectionName }}Item(key));
+  }
 }
 
 {% endif %}
@@ -178,3 +391,193 @@ export function read{{ collection.name | to_collection_name }}<
 {% endif %}
 {% endfor %}
 
+
+/**
+ * The Directus Client.
+ */
+
+export type DirectusRestCommands<T extends Record<any, any>> = keyof {
+  [K in keyof T as T[K] extends (
+    ...any: any[]
+  ) => Directus.RestCommand<any, any>
+    ? K
+    : never]: K;
+};
+
+export type TypedClient = {
+{%- for collection in registry.collections %}
+
+{% set collectionType = ["Collections.", collection.name | to_collection_name] | join %}
+{% set genericQuery = ["const Query extends Directus.Query<Schema, ", collectionType, ">"] | join %}
+{% set applyType  = ["DirectusSDK.ApplyQueryFields<Schema, ", collectionType, ", Query['fields']>"] | join %}
+
+{% if not collection.is_system %}
+
+{% if not collection.is_singleton %}
+  /**
+   * Manages multiple items from the {{ collection.name.raw | to_collection_name }} collection.
+   */
+  {{ collection.name.raw | pluralize | to_collection_string  }}: TypedCollectionItemsWrapper<Collections.{{ collection.name.raw | to_collection_name }}>;
+
+  /**
+   * Manages individual items from the {{ collection.name.raw | to_collection_name }} collection.
+   */
+  {{ collection.name.raw | singularize | to_collection_string  }}: TypedCollectionItemWrapper<Collections.{{ collection.name.raw | to_collection_name }}>;
+{% else %}
+
+  /**
+   * Fetches the only {{ collection.name.raw | singularize | to_collection_name }} instance available.
+   */
+  [{{ collection.name | to_collection_string  }}]<{{ genericQuery }}>(query?: Query): Promise<{{ applyType }}>;
+
+{% endif %}
+
+{% endif %}
+{%- endfor %}
+} & DirectusCommands;
+
+type ExcludedDirectusCommands = "withOptions" | "withToken" | "withSearch";
+
+/**
+ * This is almost a sanity check for protecting against breaking changes in the SDK.
+ * If this is erroring for you, the SDK probably changed and there's an update needed.
+ */
+
+const excludedDirectusCommands: {
+  [K in keyof Omit<
+    DirectusSDK,
+    Exclude<keyof DirectusCommands, ExcludedDirectusCommands>
+  >]: true;
+} = {
+  ["auth"]: true,
+  ["authentication"]: true,
+  ["createDirectus"]: true,
+  ["rest"]: true,
+  ["formatFields"]: true,
+  ["generateUid"]: true,
+  ["getAuthEndpoint"]: true,
+  ["graphql"]: true,
+  ["memoryStorage"]: true,
+  ["messageCallback"]: true,
+  ["pong"]: true,
+  ["queryToParams"]: true,
+  ["realtime"]: true,
+  ["sleep"]: true,
+  ["staticToken"]: true,
+  ["throwIfCoreCollection"]: true,
+  ["throwIfEmpty"]: true,
+  ["withOptions"]: true,
+  ["withToken"]: true,
+  ["withSearch"]: true,
+} as const;
+
+export type DirectusCommands = {
+  [K in DirectusRestCommands<DirectusSDK>]: (
+    ...args: Parameters<DirectusSDK[K]>
+  ) => Promise<
+    ReturnType<DirectusSDK[K]> extends Directus.RestCommand<infer Output, any>
+      ? Output
+      : unknown
+  >;
+}
+
+function isDirectusRestCommand(
+  pair: [any, any],
+): pair is [string, (...args: any[]) => Directus.RestCommand<any, any>] {
+  return (
+    !((pair?.[0] as any) in excludedDirectusCommands) &&
+    typeof pair?.[1] === "function"
+  );
+}
+
+function isDirectusRestClient<Schema>(
+  client: DirectusSDK.DirectusClient<Schema>,
+): client is DirectusSDK.DirectusClient<Schema> &
+  DirectusSDK.RestClient<Schema> {
+  return client && "request" in client;
+}
+
+export const schema = () => {
+  return <Schema>(client: Directus.DirectusClient<Schema>): TypedClient => {
+
+    if (!isDirectusRestClient(client)) {
+      throw new Error("Directus client must have the REST plugin enabled.");
+    }
+
+    return Object.fromEntries([
+      ...Object.entries(DirectusSDK)
+        .filter(isDirectusRestCommand)
+        .map(([key, value]) => {
+          return [
+            key,
+            (...args: any[]): any => {
+              return client.request(
+                value(...args),
+              );
+            },
+          ];
+        }),
+
+{% for collection in registry.collections %}
+{% if not collection.is_system%}
+{% if not collection.is_singleton %}
+      [{{ collection.name.raw | pluralize | to_collection_string }}, new {{ collection.name | to_collection_name }}Items(client as any)],
+      [{{ collection.name.raw | singularize | to_collection_string }}, new {{ collection.name | to_collection_name }}Item(client as any)],
+{% else %}
+      [{{ collection.name | to_collection_string }}, (query: any) => {
+        return client.request(read{{ collection.name | to_collection_name }}(query));
+      }],
+{% endif %}
+{% endif %}
+{% endfor %}
+    ]);
+
+  };
+}
+
+export interface BindableClient {
+  with: <
+    Client extends DirectusSDK.DirectusClient<any>,
+    Extension extends object,
+  >(
+    createExtension: (client: Client) => Extension,
+  ) => this & Extension;
+}
+
+export const bindings = () => {
+  return <Schema, Client extends DirectusSDK.DirectusClient<Schema>>(
+    client: Client,
+  ): BindableClient => {
+    return {
+      with(createExtension: any) {
+        const extension = createExtension(this);
+        const extensions = Object.entries(
+          extension,
+        ).reduce<PropertyDescriptorMap>((properties, [name, value]) => {
+          return {
+            ...properties,
+            [name]: {
+              value,
+              configurable: true,
+              writable: true,
+              enumerable: true,
+            },
+          };
+        }, {});
+
+        Object.defineProperties(this, extensions);
+
+        return this;
+      },
+    } as any;
+  };
+};
+
+export function createDirectus(
+  url: string,
+): Directus.DirectusClient<Schema> & Directus.RestClient<Schema> & TypedClient {
+  return DirectusSDK.createDirectus<Schema>(url)
+    .with(bindings())
+    .with(DirectusSDK.rest())
+    .with(schema());
+}

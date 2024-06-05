@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "pnpm --parallel dev",
     "indirectus": "tsx --no-cache --tsconfig packages/cli/tsconfig.json packages/cli/cli/index.ts",
-    "ci:build": "pnpm -r build",
-    "ci:version": "pnpm changeset version",
-    "ci:publish": "pnpm -r publish --access public",
-    "ci": "pnpm ci:version && pnpm ci:build && pnpm ci:publish"
+    "build": "pnpm -r build",
+    "version": "pnpm changeset version",
+    "release": "pnpm -r publish --access public",
+    "ci": "pnpm run version && pnpm run build && pnpm run release"
   },
   "devDependencies": {
     "@directus/sdk": "^16.0.0",

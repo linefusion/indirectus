@@ -43,6 +43,7 @@
     "eventemitter2": "^6.4.9",
     "jiti": "^1.21.0",
     "nunjucks": "^3.2.4",
+    "pluralize": "^8.0.0",
     "prettier": "^3.2.5",
     "ts-pattern": "^5.1.1"
   },
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@types/nunjucks": "^3.2.6",
+    "@types/pluralize": "^0.0.33",
     "@wolfpkgs/tsconfig": "^0.2.0",
     "conditional-type-checks": "^1.0.6",
     "ts-toolbelt": "^9.6.0",
