@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 1.0.2
+
+### Patch Changes
+
+- fix: make it backwards compatible
+
 ## 1.0.1
 
 ### Patch Changes

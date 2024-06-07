@@ -210,6 +210,11 @@ export function read{{ collectionName }}<
   return DirectusSDK.readSingleton<Schema, {{ collectionString }}, Query>("{{ collection.name }}", query);
 }
 
+/**
+ * Reads the {{ collection.name | to_collection_text }} singleton.
+ */
+export const get{{ collectionName }} = read{{ collectionName }};
+
 {% else %}
 
 /**
@@ -240,6 +245,11 @@ export function read{{ collectionName }}Items<
 }
 
 /**
+ * Read many {{ collection.name | to_collection_text }} items.
+ */
+export const list{{ collectionName }} = read{{ collectionName }}Items;
+
+/**
  * Gets a single known {{ collection.name | to_collection_text }} item by id.
  */
 export function read{{ collectionName }}Item<
@@ -247,6 +257,11 @@ export function read{{ collectionName }}Item<
 >(key: string | number, query?: Query) {
   return DirectusSDK.readItem<Schema, {{ collectionString }}, Query>("{{ collection.name }}", key, query);
 }
+
+/**
+ * Gets a single known {{ collection.name | to_collection_text }} item by id.
+ */
+export const read{{ collectionName }} = read{{ collectionName }}Item;
 
 /**
  * Read many {{ collection.name | to_collection_text }} items.
@@ -265,8 +280,6 @@ export function update{{ collectionName }}Item<
 >(key: string | number, patch: Partial<{{ collectionType }}>, query?: Query) {
   return DirectusSDK.updateItem<Schema, {{ collectionString }}, Query>("{{ collection.name }}", key, patch, query);
 }
-
-
 
 /**
  * Deletes many {{ collection.name | to_collection_text }} items.
