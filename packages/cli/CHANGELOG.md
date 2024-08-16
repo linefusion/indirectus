@@ -1,5 +1,11 @@
 # @indirectus/cli
 
+## 1.1.0
+
+### Minor Changes
+
+- 49eba90: fixes for v11
+
 ## 1.0.2
 
 ### Patch Changes
