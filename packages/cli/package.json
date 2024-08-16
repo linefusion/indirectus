@@ -35,17 +35,17 @@
     "build:tests": "echo none"
   },
   "dependencies": {
-    "@directus/sdk": "^16.0.0",
+    "@directus/sdk": "^17.0.0",
     "@wolfpkgs/core": "^0.2.13",
     "chokidar": "^3.6.0",
     "citty": "^0.1.6",
     "consola": "^3.2.3",
     "eventemitter2": "^6.4.9",
-    "jiti": "^1.21.0",
+    "jiti": "^1.21.6",
     "nunjucks": "^3.2.4",
     "pluralize": "^8.0.0",
-    "prettier": "^3.2.5",
-    "ts-pattern": "^5.1.1"
+    "prettier": "^3.3.3",
+    "ts-pattern": "^5.3.1"
   },
   "optionalDependencies": {
     "zod": "^3.23.8"
@@ -56,6 +56,6 @@
     "@wolfpkgs/tsconfig": "^0.2.0",
     "conditional-type-checks": "^1.0.6",
     "ts-toolbelt": "^9.6.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.4"
   }
 }

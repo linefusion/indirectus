@@ -30,8 +30,9 @@ export function to_collection_name(
   partial = false,
 ) {
   value = `${value}`;
-  const system = context.registry.collections.find((c) => c.name.raw == value)
-    ?.is_system;
+  const system = context.registry.collections.find(
+    (c) => c.name.raw == value,
+  )?.is_system;
   let name = pascal_case(context, value);
   if (system) {
     if (partial) {
@@ -42,9 +43,11 @@ export function to_collection_name(
         "",
       );
       name = name == "Setting" ? "Settings" : name;
+      name = name == "Acces" ? "Access" : name;
     } else {
       name = regex_replace(context, pascal_case(context, value), "s$", "");
       name = name == "DirectusSetting" ? "DirectusSettings" : name;
+      name = name == "DirectusAcces" ? "DirectusAccess" : name;
     }
   }
   return name;

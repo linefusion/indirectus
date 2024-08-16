@@ -35,7 +35,12 @@ export type Schema = {
   relations: DirectusRelation[];
 };
 
-const ignoredCollections = ["directus_migrations", "directus_sessions"];
+const ignoredCollections = [
+  "directus_migrations",
+  "directus_sessions",
+  "directus_access",
+  "directus_policies",
+];
 
 export async function fetchSchema(
   directus: { url: string; token: string },
@@ -122,7 +127,8 @@ export async function fetchSchema(
     }
 
     const url = new URL(directus.url);
-    url.pathname = (url.pathname?.replace(/\/$/, "") ?? "") + "/schema/snapshot";
+    url.pathname =
+      (url.pathname?.replace(/\/$/, "") ?? "") + "/schema/snapshot";
     url.searchParams.set("export", "json");
     url.searchParams.set("access_token", directus.token);
 

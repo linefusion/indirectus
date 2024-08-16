@@ -14,6 +14,24 @@ type DirectusSDK = typeof DirectusSDK;
 
 {% endblock %}
 
+/*
+declare module "@directus/sdk" {
+  type DirectusAccess<Schema = any> = Directus.MergeCoreCollection<
+    Schema,
+    "directus_access", {
+      id: string;
+    }
+  >;
+
+  type DirectusPolicies<Schema = any> = Directus.MergeCoreCollection<
+    Schema,
+    "directus_policies", {
+      id: string;
+    }
+  >;
+}
+*/
+
 export namespace Types {
 {% block types %}
   // Internal
@@ -485,9 +503,30 @@ const excludedDirectusCommands: {
   ["withSearch"]: true,
 } as const;
 
+type _InjectSchemaSystemTypes<T, Schema>
+  = T extends Directus.Query<any, infer C> ? Directus.Query<Schema, C>
+{% for collection in registry.collections -%}
+{% if collection.is_system %}
+  : T extends Directus.{{ collection.name | to_collection_name }}<any> ? Directus.{{ collection.name | to_collection_name }}<Schema>
+{% endif %}
+{% endfor %}
+  : T extends Directus.DirectusUser<any> ? Directus.DirectusUser<Schema>
+  : T;
+
+type InjectSchemaSystemTypes<T, Schema>
+  = T extends Partial<infer Nested> ? Partial<_InjectSchemaSystemTypes<Nested, Schema>>
+  : _InjectSchemaSystemTypes<T, Schema>
+  ;
+
+type InjectSchema<T, Schema>
+  = T extends [] ? []
+  : T extends [infer Param] ? [InjectSchema<Param, Schema>]
+  : T extends [infer Param, ...infer Rest] ? [InjectSchema<Param, Schema>, ...InjectSchema<Rest, Schema>]
+  : InjectSchemaSystemTypes<T, Schema>;
+
 export type DirectusCommands = {
   [K in DirectusRestCommands<DirectusSDK>]: (
-    ...args: Parameters<DirectusSDK[K]>
+    ...args: InjectSchema<Parameters<DirectusSDK[K]>, Schema>
   ) => Promise<
     ReturnType<DirectusSDK[K]> extends Directus.RestCommand<infer Output, any>
       ? Output
