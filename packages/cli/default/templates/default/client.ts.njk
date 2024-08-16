@@ -503,7 +503,7 @@ const excludedDirectusCommands: {
   ["withSearch"]: true,
 } as const;
 
-type _InjectSchemaSystemTypes<T, Schema>
+export type _InjectSchemaSystemTypes<T, Schema>
   = T extends Directus.Query<any, infer C> ? Directus.Query<Schema, C>
 {% for collection in registry.collections -%}
 {% if collection.is_system %}
@@ -513,12 +513,12 @@ type _InjectSchemaSystemTypes<T, Schema>
   : T extends Directus.DirectusUser<any> ? Directus.DirectusUser<Schema>
   : T;
 
-type InjectSchemaSystemTypes<T, Schema>
+export type InjectSchemaSystemTypes<T, Schema>
   = T extends Partial<infer Nested> ? Partial<_InjectSchemaSystemTypes<Nested, Schema>>
   : _InjectSchemaSystemTypes<T, Schema>
   ;
 
-type InjectSchema<T, Schema>
+export type InjectSchema<T, Schema>
   = T extends [] ? []
   : T extends [infer Param] ? [InjectSchema<Param, Schema>]
   : T extends [infer Param, ...infer Rest] ? [InjectSchema<Param, Schema>, ...InjectSchema<Rest, Schema>]
