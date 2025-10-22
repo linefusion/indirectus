@@ -11,14 +11,14 @@
     "ci": "pnpm run version && pnpm run build && pnpm run release"
   },
   "devDependencies": {
-    "@directus/sdk": "^20.0.0",
-    "@types/node": "^24.0.12",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4"
+    "@directus/sdk": "20.1.0",
+    "@types/node": "24.9.1",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "4.0.1"
   },
   "dependencies": {
-    "@changesets/cli": "^2.29.5"
+    "@changesets/cli": "2.29.7"
   },
   "files": []
 }

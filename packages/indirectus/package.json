@@ -35,7 +35,7 @@
     "@indirectus/cli": "workspace:*"
   },
   "devDependencies": {
-    "@wolfpkgs/tsconfig": "^0.2.0",
-    "typescript": "^5.5.4"
+    "@wolfpkgs/tsconfig": "0.2.0",
+    "typescript": "5.9.3"
   }
 }
