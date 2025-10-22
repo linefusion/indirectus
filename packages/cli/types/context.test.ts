@@ -33,6 +33,6 @@ describe("contexts", async () => {
   it("should deserialize context", async () => {
     const context = contextFromSchema(schema);
     const json = contextToJson(context);
-    const context2 = contextFromJson(json);
+    contextFromJson(json);
   });
 });
